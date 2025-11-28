@@ -29,7 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`${apiUrl}/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: question }),
+        body: JSON.stringify({ 
+          text: question,
+          auth_params: "public_oakhillpines"
+         }),
       });
       const data = await res.json();
       pollAnswer(data.question_id);
