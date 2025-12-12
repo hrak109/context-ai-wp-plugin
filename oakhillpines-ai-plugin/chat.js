@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (!sessionStorage.getItem("greeted")) {
-        appendMessage("ai", "Hi. I am Oakhill Pines AI! How can I help you today?");
-        sessionStorage.setItem("greeted", "true");
-    }
+    appendMessage("ai", "Hi. I am Oakhill Pines AI! How can I help you today?");
+    sessionStorage.setItem("greeted", "true");
+  }
 
   async function sendQuestion() {
     const question = input.value.trim();
@@ -26,13 +26,13 @@ document.addEventListener("DOMContentLoaded", () => {
     appendMessage("ai", "⏳ Thinking...");
 
     try {
-      const res = await fetch(`${apiUrl}/ask`, {
+      const res = await fetch(`${apiUrl}/api/public/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           q_text: question,
           auth_params: "public_oakhillpines"
-         }),
+        }),
       });
       const data = await res.json();
       pollAnswer(data.question_id);
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let answered = false;
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${apiUrl}/get_answer/${qid}`);
+        const res = await fetch(`${apiUrl}/api/public/get_answer/${qid}`);
         if (!res.ok) return;
 
         const data = await res.json();
