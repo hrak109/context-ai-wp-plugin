@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           q_text: question,
-          auth_params: "public_oakhillpines"
         }),
       });
       const data = await res.json();
