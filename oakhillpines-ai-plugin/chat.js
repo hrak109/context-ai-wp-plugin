@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appendMessage("ai", "⏳ Thinking...");
 
     try {
-      const res = await fetch(`${apiUrl}/api/public/ask`, {
+      const res = await fetch(`${apiUrl}/api/oakhillpines/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let answered = false;
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`${apiUrl}/api/public/get_answer/${qid}`);
+        const res = await fetch(`${apiUrl}/api/oakhillpines/get_answer/${qid}`);
         if (!res.ok) return;
 
         const data = await res.json();
