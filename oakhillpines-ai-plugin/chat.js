@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
           answered = true;
         }
       } catch (err) {
-        console.error("Polling error:", err);
+        // Silent fail or minimal handling
       }
     }, 5000);
 
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(interval);
         appendMessage("ai", "⌛ Response timed out.");
       }
-    }, 120000); //2min timeout
+    }, 120000);
   }
 
   sendBtn.addEventListener("click", sendQuestion);

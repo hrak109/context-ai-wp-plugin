@@ -1,0 +1,21 @@
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+tests/
+__pycache__/
+*.pyc
+
+# Archives
+*.zip
+*.tar.gz
