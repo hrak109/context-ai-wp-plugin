@@ -31,7 +31,7 @@ function context_ai_options_page() {
             <?php do_settings_sections('context_ai_options'); ?>
             
             <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                 data-client_id="801464542210-b08v4fc2tsk7ma3bfu30jc1frueps1on.apps.googleusercontent.com"
                  data-callback="handleCredentialResponse"
                  data-auto_prompt="false">
             </div>
@@ -63,31 +63,45 @@ function context_ai_options_page() {
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        function handleCredentialResponse(response) {
-            // Decode the JWT credential
+        async function handleCredentialResponse(response) {
+            // Decode the JWT credential for logging
             const responsePayload = decodeJwtResponse(response.credential);
+            console.log("Local Decode:", responsePayload);
 
-            console.log("ID: " + responsePayload.sub);
-            console.log('Full Name: ' + responsePayload.name);
-            console.log('Given Name: ' + responsePayload.given_name);
-            console.log('Family Name: ' + responsePayload.family_name);
-            console.log("Image URL: " + responsePayload.picture);
-            console.log("Email: " + responsePayload.email);
+            try {
+                // Register with Backend to get API Key
+                const res = await fetch('https://api.oakhillpines.com/api/oakhillpines/register_business', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_token: response.credential })
+                });
 
-            // Update UI
-            document.getElementById('profile-card').style.display = 'block';
-            document.getElementById('profile-img').src = responsePayload.picture;
-            document.getElementById('profile-name').innerText = responsePayload.name;
-            document.getElementById('profile-email').innerText = responsePayload.email;
+                if (!res.ok) {
+                    const errData = await res.text();
+                    throw new Error("Server Error: " + errData);
+                }
 
-            // Update Inputs
-            document.getElementById('input_client_id').value = responsePayload.email; // Using Email as ID for now
-            document.getElementById('input_client_name').value = responsePayload.name;
-            document.getElementById('input_client_email').value = responsePayload.email;
-            document.getElementById('input_client_picture').value = responsePayload.picture;
+                const data = await res.json();
 
-            // Auto-submit form to save options
-            document.getElementById('context-ai-form').submit();
+                // Update UI
+                document.getElementById('profile-card').style.display = 'block';
+                document.getElementById('profile-img').src = data.picture_url;
+                document.getElementById('profile-name').innerText = data.name;
+                document.getElementById('profile-email').innerText = data.email;
+
+                // Update Inputs
+                document.getElementById('input_client_id').value = data.api_key; // Use API Key
+                document.getElementById('input_client_name').value = data.name;
+                document.getElementById('input_client_email').value = data.email;
+                document.getElementById('input_client_picture').value = data.picture_url;
+
+                // Auto-submit form to save options
+                document.getElementById('context-ai-form').submit();
+
+            } catch (err) {
+                console.error(err);
+                alert("Failed to connect business: " + err.message);
+            }
         }
 
         function decodeJwtResponse(token) {

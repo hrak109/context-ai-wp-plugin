@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Oakhill Pines AI
- * Description: LLM powered chat plugin for Oakhill Pines website.
- * Version: 1.0
+ * Plugin Name: Context AI for Businesses
+ * Description: Business chat plugin for WordPress. Upload your business information and let Context AI handle your customer questions and inquiries!
+ * Version: 2.0
  * Author: Hee Bae
  */
 
@@ -12,8 +12,8 @@ function ai_chat_enqueue_scripts() {
 
     // Pass the API URL and Client ID to JavaScript
     wp_localize_script('ai-chat-script', 'aiChat', array(
-        'apiUrl' => 'https://api.oakhillpines.com',
-        'clientId' => get_option('context_ai_client_email') // Use stored email as client ID
+        'apiUrl' => 'https://api.oakhillpines.com/api/oakhillpines',
+        'clientId' => get_option('context_ai_client_id') // Use stored API Key as client ID
     ));
 }
 add_action('wp_enqueue_scripts', 'ai_chat_enqueue_scripts');
@@ -31,13 +31,18 @@ function ai_chat_shortcode() {
         <div id="ai-chat-container" class="hidden">
             <div id="ai-chat-header">
                 <span>Context AI</span>
-                <button id="ai-chat-close">&times;</button>
+                <button id="ai-chat-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
-            <div id="ai-chat-messages"></div>
+            <div id="ai-chat-messages">
+                 <!-- Welcome Message -->
+                 <div class="chat-message ai">Hello! How can I help you today?</div>
+            </div>
             <div id="ai-chat-input-area">
-                <input type="text" id="ai-chat-input" placeholder="Ask a question..." />
+                <input type="text" id="ai-chat-input" placeholder="Type your message..." />
                 <button id="ai-chat-send">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                 </button>
             </div>
         </div>

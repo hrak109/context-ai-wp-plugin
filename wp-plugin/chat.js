@@ -11,26 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Toggle Visibility
   function toggleChat() {
-    if (container.classList.contains('hidden')) {
-      container.classList.remove('hidden');
-      container.style.display = 'flex';
-      setTimeout(() => {
-        container.style.opacity = '1';
-        container.style.transform = 'translateY(0)';
-      }, 10);
+    container.classList.toggle('hidden');
+    if (!container.classList.contains('hidden')) {
       input.focus();
-    } else {
-      closeChat();
     }
   }
 
   function closeChat() {
-    container.style.opacity = '0';
-    container.style.transform = 'translateY(20px)';
-    setTimeout(() => {
-      container.classList.add('hidden');
-      container.style.display = 'none';
-    }, 300);
+    container.classList.add('hidden');
   }
 
   toggleBtn.addEventListener('click', toggleChat);
@@ -72,8 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           q_text: question,
-          client_id: clientId, // Send the Business Email
-          topic: "context-ai"
+          message_group_id: clientId, // Using Business Email as message_group_id
         }),
       });
 
