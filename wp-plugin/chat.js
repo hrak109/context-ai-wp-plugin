@@ -112,14 +112,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 2000); // Poll every 2s
 
-    // Timeout after 60s
+    // Timeout after 3 minutes (180000ms)
     setTimeout(() => {
       if (!answered) {
         clearInterval(interval);
         removeTypingIndicator();
         appendMessage("ai", "⌛ Response timed out. Please try again later.");
       }
-    }, 60000);
+    }, 180000);
   }
 
   sendBtn.addEventListener("click", sendQuestion);

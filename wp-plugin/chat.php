@@ -1,14 +1,17 @@
 <?php
 /**
- * Plugin Name: Context AI for Businesses
- * Description: Business chat plugin for WordPress. Upload your business information and let Context AI handle your customer questions and inquiries!
- * Version: 2.0
- * Author: Hee Bae
+ * Plugin Name:       hai Context AI: Your business & website inquiries, now fully answered by AI!
+ * Description:       Fully automated AI chatbot with an expert knowledge of your business and information. Simply upload a pdf file of your business & information to hai Context AI and let it handle and answer customer support inquiries by providing pinpoint-accurate, context-aware answers 24/7.
+ * Version:           2.0
+ * Author:            hai by Hee Bae / Also check out Socius Friends on the Android/iOS App Store!
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       hai-context-ai
  */
 
 function ai_chat_enqueue_scripts() {
-    wp_enqueue_style('ai-chat-style', plugin_dir_url(__FILE__) . 'chat.css');
-    wp_enqueue_script('ai-chat-script', plugin_dir_url(__FILE__) . 'chat.js', array('jquery'), null, true);
+    wp_enqueue_style('ai-chat-style', plugin_dir_url(__FILE__) . 'chat.css', array(), filemtime(plugin_dir_path(__FILE__) . 'chat.css'));
+    wp_enqueue_script('ai-chat-script', plugin_dir_url(__FILE__) . 'chat.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'chat.js'), true);
 
     // Pass the API URL and Client ID to JavaScript
     wp_localize_script('ai-chat-script', 'aiChat', array(
@@ -30,7 +33,7 @@ function ai_chat_shortcode() {
         </button>
         <div id="ai-chat-container" class="hidden">
             <div id="ai-chat-header">
-                <span>Context AI</span>
+                <span>hai Context AI</span>
                 <button id="ai-chat-close">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>

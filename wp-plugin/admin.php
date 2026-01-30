@@ -9,8 +9,8 @@ add_action('admin_init', 'context_ai_register_settings');
 
 function context_ai_add_admin_menu() {
     add_menu_page(
-        'Context AI',
-        'Context AI',
+        'hai Context AI',
+        'hai Context AI',
         'manage_options',
         'context_ai',
         'context_ai_options_page',
@@ -23,25 +23,18 @@ add_action('admin_menu', 'context_ai_add_admin_menu');
 function context_ai_options_page() {
     ?>
     <div class="wrap">
-        <h1>Context AI Settings</h1>
-        <p>Sign in with your Google Account to connect your business.</p>
+        <h1>hai Context AI Settings</h1>
+        <p>Connect your business to enable AI chat on your website.</p>
 
         <form method="post" action="options.php" id="context-ai-form">
             <?php settings_fields('context_ai_options'); ?>
             <?php do_settings_sections('context_ai_options'); ?>
             
-            <div id="g_id_onload"
-                 data-client_id="801464542210-b08v4fc2tsk7ma3bfu30jc1frueps1on.apps.googleusercontent.com"
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left">
+            <div id="auth-section" style="margin-bottom: 20px;">
+                <button type="button" id="connect-google-btn" class="button button-primary" style="display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 40px;">
+                    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.96H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.041l3.007-2.334z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 3.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+                    Connect with Google
+                </button>
             </div>
 
             <div id="profile-card" style="margin-top: 20px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; max-width: 400px; display: <?php echo get_option('context_ai_client_email') ? 'block' : 'none'; ?>;">
@@ -57,31 +50,30 @@ function context_ai_options_page() {
             <input type="hidden" name="context_ai_client_email" id="input_client_email" value="<?php echo esc_attr(get_option('context_ai_client_email')); ?>">
             <input type="hidden" name="context_ai_client_picture" id="input_client_picture" value="<?php echo esc_attr(get_option('context_ai_client_picture')); ?>">
             
-            <?php submit_button('Update Connection Manually', 'secondary'); ?>
+            <?php submit_button('Update Connection Manually', 'secondary', 'submit_manual'); ?>
         </form>
     </div>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
-        async function handleCredentialResponse(response) {
-            // Decode the JWT credential for logging
-            const responsePayload = decodeJwtResponse(response.credential);
-            console.log("Local Decode:", responsePayload);
+        document.getElementById('connect-google-btn').addEventListener('click', () => {
+            const width = 500;
+            const height = 600;
+            const left = (window.screen.width / 2) - (width / 2);
+            const top = (window.screen.height / 2) - (height / 2);
+            
+            const authWindow = window.open(
+                'https://api.oakhillpines.com/api/oakhillpines/auth/google',
+                'ContextAIAuth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+        });
 
-            try {
-                // Register with Backend to get API Key
-                const res = await fetch('https://api.oakhillpines.com/api/oakhillpines/register_business', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_token: response.credential })
-                });
+        window.addEventListener('message', (event) => {
+            // Check origin for security
+            if (event.origin !== 'https://api.oakhillpines.com') return;
 
-                if (!res.ok) {
-                    const errData = await res.text();
-                    throw new Error("Server Error: " + errData);
-                }
-
-                const data = await res.json();
+            if (event.data.type === 'CONTEXT_AI_AUTH_SUCCESS') {
+                const data = event.data.data;
 
                 // Update UI
                 document.getElementById('profile-card').style.display = 'block';
@@ -90,28 +82,15 @@ function context_ai_options_page() {
                 document.getElementById('profile-email').innerText = data.email;
 
                 // Update Inputs
-                document.getElementById('input_client_id').value = data.api_key; // Use API Key
+                document.getElementById('input_client_id').value = data.api_key;
                 document.getElementById('input_client_name').value = data.name;
                 document.getElementById('input_client_email').value = data.email;
                 document.getElementById('input_client_picture').value = data.picture_url;
 
                 // Auto-submit form to save options
-                document.getElementById('context-ai-form').submit();
-
-            } catch (err) {
-                console.error(err);
-                alert("Failed to connect business: " + err.message);
+                HTMLFormElement.prototype.submit.call(document.getElementById('context-ai-form'));
             }
-        }
-
-        function decodeJwtResponse(token) {
-            var base64Url = token.split('.')[1];
-            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
-        }
+        });
     </script>
     <?php
 }
