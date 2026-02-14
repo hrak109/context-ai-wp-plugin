@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name:       Context AI Powered by hai: Your business & website inquiries, now fully answered by AI!
- * Description:       Fully automated AI chatbot with an expert knowledge of your business and information. Simply upload a pdf file of your business & information to hai Context AI and let it handle and answer customer support inquiries by providing pinpoint-accurate, context-aware answers 24/7.
+ * Plugin Name:       Context AI (Powered by hai)
+ * Description:       Fully automated AI chatbot with an expert knowledge of your business and information. Simply input your business details & information and let it handle and answer customer support inquiries by providing pinpoint-accurate, context-aware answers 24/7.
  * Version:           2.0
  * Author:            hai by Hee Bae / Also check out Socius Friends on the Android/iOS App Store!
  * License:           GPL-2.0+
@@ -16,7 +16,8 @@ function ai_chat_enqueue_scripts() {
     // Pass the API URL and Client ID to JavaScript
     wp_localize_script('ai-chat-script', 'aiChat', array(
         'apiUrl' => 'https://api.oakhillpines.com/api/oakhillpines',
-        'clientId' => get_option('context_ai_client_id') // Use stored API Key as client ID
+        'clientId' => get_option('context_ai_client_id'), // Use stored API Key as client ID
+        'botName' => get_option('context_ai_bot_name', 'Context AI')
     ));
 }
 add_action('wp_enqueue_scripts', 'ai_chat_enqueue_scripts');
@@ -33,7 +34,7 @@ function ai_chat_shortcode() {
         </button>
         <div id="ai-chat-container" class="hidden">
             <div id="ai-chat-header">
-                <span>Context AI Powered by hai</span>
+                <span><?php echo esc_html(get_option('context_ai_bot_name', 'Context AI')); ?></span>
                 <button id="ai-chat-close">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>

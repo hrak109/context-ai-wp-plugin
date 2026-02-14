@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     appendMessage("user", question);
     input.value = "";
-    appendMessage("ai", "..."); // Typing indicator
+    // Typing indicator removed as per request
 
     try {
       const res = await fetch(`${apiUrl}/ask`, {
@@ -66,12 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(data.detail || "Error");
       }
 
-      // Remove typing indicator if it's the last child
-      removeTypingIndicator();
-
       // Start polling
-      appendMessage("ai", "⏳ Thinking...");
       pollAnswer(data.question_id);
+
 
     } catch (err) {
       removeTypingIndicator();

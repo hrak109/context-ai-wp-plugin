@@ -4,6 +4,7 @@ function context_ai_register_settings() {
     register_setting('context_ai_options', 'context_ai_client_name');
     register_setting('context_ai_options', 'context_ai_client_email');
     register_setting('context_ai_options', 'context_ai_client_picture');
+    register_setting('context_ai_options', 'context_ai_bot_name');
 }
 add_action('admin_init', 'context_ai_register_settings');
 
@@ -50,7 +51,13 @@ function context_ai_options_page() {
             <input type="hidden" name="context_ai_client_email" id="input_client_email" value="<?php echo esc_attr(get_option('context_ai_client_email')); ?>">
             <input type="hidden" name="context_ai_client_picture" id="input_client_picture" value="<?php echo esc_attr(get_option('context_ai_client_picture')); ?>">
             
-            <?php submit_button('Update Connection Manually', 'secondary', 'submit_manual'); ?>
+            <div style="margin-top: 20px;">
+                <h3>Chat Settings</h3>
+                <label for="context_ai_bot_name">Bot Name (Displayed in Chat Header):</label><br>
+                <input type="text" name="context_ai_bot_name" id="context_ai_bot_name" value="<?php echo esc_attr(get_option('context_ai_bot_name', 'Context AI')); ?>" style="width: 100%; max-width: 400px; margin-top: 5px;" placeholder="Context AI">
+            </div>
+
+            <?php submit_button('Update Settings', 'primary', 'submit_manual'); ?>
         </form>
 
         <hr>
