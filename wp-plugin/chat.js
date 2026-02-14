@@ -34,11 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
 
-  // Initial Greeting
-  if (!sessionStorage.getItem("greeted")) {
-    appendMessage("ai", "Hello! How can I assist you today?");
-    sessionStorage.setItem("greeted", "true");
-  }
+
 
   // Send Logic
   async function sendQuestion() {

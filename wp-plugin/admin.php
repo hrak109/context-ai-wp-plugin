@@ -9,8 +9,8 @@ add_action('admin_init', 'context_ai_register_settings');
 
 function context_ai_add_admin_menu() {
     add_menu_page(
-        'hai Context AI',
-        'hai Context AI',
+        'Context AI',
+        'Context AI',
         'manage_options',
         'context_ai',
         'context_ai_options_page',
@@ -23,7 +23,7 @@ add_action('admin_menu', 'context_ai_add_admin_menu');
 function context_ai_options_page() {
     ?>
     <div class="wrap">
-        <h1>hai Context AI Settings</h1>
+        <h1>Context AI Settings</h1>
         <p>Connect your business to enable AI chat on your website.</p>
 
         <form method="post" action="options.php" id="context-ai-form">
@@ -52,6 +52,81 @@ function context_ai_options_page() {
             
             <?php submit_button('Update Connection Manually', 'secondary', 'submit_manual'); ?>
         </form>
+
+        <hr>
+
+        <h2>Business Context / System Instruction</h2>
+        <p>Enter the text that describes your business. The AI will use this as its knowledge base.</p>
+        <textarea id="context_ai_system_instruction" rows="10" placeholder="You are the AI assistant for..." style="width: 100%; max-width: 800px;"></textarea>
+        <br><br>
+        <button type="button" class="button button-primary" id="save-context-btn">Save Context</button>
+        <span id="save-context-status" style="margin-left: 10px;"></span>
+
+        <script>
+        document.getElementById('save-context-btn').addEventListener('click', function() {
+            var btn = this;
+            var status = document.getElementById('save-context-status');
+            var text = document.getElementById('context_ai_system_instruction').value;
+            var clientId = "<?php echo esc_js(get_option('context_ai_client_id')); ?>";
+            var apiBase = "https://api.oakhillpines.com/api/oakhillpines";
+
+            if(!clientId) {
+                alert("Please connect your account first.");
+                return;
+            }
+
+            btn.disabled = true;
+            status.textContent = "Saving...";
+            status.style.color = "black";
+
+            fetch(apiBase + '/business/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    client_id: clientId,
+                    context_text: text
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                status.textContent = "Saved successfully!";
+                status.style.color = "green";
+                btn.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                status.textContent = "Error saving context.";
+                status.style.color = "red";
+                btn.disabled = false;
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+             var clientId = "<?php echo esc_js(get_option('context_ai_client_id')); ?>";
+             var apiBase = "https://api.oakhillpines.com/api/oakhillpines";
+
+             if(clientId) {
+                 fetch(apiBase + '/business/' + clientId)
+                 .then(res => {
+                     if(res.ok) return res.json();
+                     return null;
+                 })
+                 .then(data => {
+                     if(data && data.context_text) {
+                         document.getElementById('context_ai_system_instruction').value = data.context_text;
+                     }
+                 })
+                 .catch(err => console.log('Could not load existing context', err));
+             }
+        });
+        </script>
     </div>
 
     <script>
