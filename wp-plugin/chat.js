@@ -67,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Start polling
+      appendMessage("ai", "Thinking...");
       pollAnswer(data.question_id);
-
 
     } catch (err) {
       removeTypingIndicator();
@@ -78,10 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function removeTypingIndicator() {
-    // Logic assumes '...' or 'Thinking...' are the indicators. 
-    // A robust way knows the specific element ID. For now simple check:
     const last = messagesDiv.lastElementChild;
-    if (last && (last.textContent === "..." || last.textContent === "⏳ Thinking...")) {
+    if (last && last.textContent === "Thinking...") {
       last.remove();
     }
   }
@@ -97,6 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.status === "answered") {
           removeTypingIndicator();
           appendMessage("ai", data.answer);
+          appendMessage("ai", "Please note that I can be wrong sometimes!");
           clearInterval(interval);
           answered = true;
         }
